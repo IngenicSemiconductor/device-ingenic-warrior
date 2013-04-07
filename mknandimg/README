@@ -1,0 +1,6 @@
+build:
+	mkdir kernel/driver/nand/misc/build/lib
+	make -C kernel/driver/nand/misc/build
+	make -C kernel/driver/nand/misc/mkimg
+	cp kernel/driver/nand/misc/mkimg .
+	cp kernel/driver/nand/misc/mkimg/config.ini .

@@ -1,0 +1,28 @@
+#Burn List
+#Tips: "#" is the character for comment
+#Format:
+#	erase:[partition to erase]	(optional, only for NAND)
+#	[file name]>[partition name | burn addr(sector)]>[FS type(optional for NAND)]
+#e.g.(NAND):
+#	erase:all
+#	x-boot-nand.bin>ndxboot>raw
+#	boot.img>ndboot>raw
+#	system.img>ndsystem>ext4
+#e.g.(eMMC):
+#	x-boot-nand.bin>0
+#	boot.img>6144
+#	system.img>131072
+
+erase:all
+#erase:ndboot,ndsystem
+#erase:ndxboot
+
+option:no_check
+
+format:ndcache>ext4,nddata>ext4
+
+x-boot-nand.bin>ndxboot>raw
+boot.img>ndboot>raw
+system.img>ndsystem>raw
+
+

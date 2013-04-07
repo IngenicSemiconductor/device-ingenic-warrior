@@ -1,0 +1,3 @@
+#/system/bin/pretest_ui pretest_ui -d ft5x06_tsc
+/sbin/burner burner
+

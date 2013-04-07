@@ -1,0 +1,106 @@
+>From 4758c8e016dfc5f4565f7145b0eec7d8097168a7 Mon Sep 17 00:00:00 2001
+From: Chris Dearman <chris@mips.com>
+Date: Mon, 8 Oct 2012 12:10:17 -0700
+Subject: [PATCH] Conditionalise ARM specific compiler option
+
+Change-Id: I92ed31bff30a5011e9e0e86c7c90ca140be2f4dc
+---
+ bcm4329/dhdutil/Android.mk              |    5 ++++-
+ bcm4329/wpa_supplicant_8_lib/Android.mk |    2 ++
+ bcmdhd/dhdutil/Android.mk               |    5 ++++-
+ bcmdhd/wpa_supplicant_8_lib/Android.mk  |    2 ++
+ 4 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/hardware/broadcom/wlan/bcm4329/dhdutil/Android.mk b/hardware/broadcom/wlan/bcm4329/dhdutil/Android.mk
+index bc4c27b..c4a8586 100644
+--- a/hardware/broadcom/wlan/bcm4329/dhdutil/Android.mk
++++ b/hardware/broadcom/wlan/bcm4329/dhdutil/Android.mk
+@@ -26,7 +26,10 @@ LOCAL_SRC_FILES := \
+ 	miniopt.c
+ 
+ LOCAL_MODULE := dhdutil
+-LOCAL_CFLAGS := -DSDTEST -DTARGETENV_android -Dlinux -DLINUX -mabi=aapcs-linux
++LOCAL_CFLAGS := -DSDTEST -DTARGETENV_android -Dlinux -DLINUX
++ifeq ($(TARGET_ARCH),arm)
++LOCAL_CFLAGS += -mabi=aapcs-linux
++endif
+ LOCAL_C_INCLUDES +=$(LOCAL_PATH)/include
+ 
+ LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
+diff --git a/hardware/broadcom/wlan/bcm4329/wpa_supplicant_8_lib/Android.mk b/hardware/broadcom/wlan/bcm4329/wpa_supplicant_8_lib/Android.mk
+index 5b50255..157b510 100644
+--- a/hardware/broadcom/wlan/bcm4329/wpa_supplicant_8_lib/Android.mk
++++ b/hardware/broadcom/wlan/bcm4329/wpa_supplicant_8_lib/Android.mk
+@@ -33,8 +33,10 @@ WPA_SUPPL_DIR_INCLUDE = $(WPA_SUPPL_DIR)/src \
+ 	$(WPA_SUPPL_DIR)/src/wps \
+ 	$(WPA_SUPPL_DIR)/wpa_supplicant
+ 
++ifeq ($(TARGET_ARCH),arm)
+ # To force sizeof(enum) = 4
+ L_CFLAGS += -mabi=aapcs-linux
++endif
+ 
+ ifdef CONFIG_ANDROID_LOG
+ L_CFLAGS += -DCONFIG_ANDROID_LOG
+diff --git a/hardware/broadcom/wlan/bcmdhd/dhdutil/Android.mk b/hardware/broadcom/wlan/bcmdhd/dhdutil/Android.mk
+index bc4c27b..c4a8586 100644
+--- a/hardware/broadcom/wlan/bcmdhd/dhdutil/Android.mk
++++ b/hardware/broadcom/wlan/bcmdhd/dhdutil/Android.mk
+@@ -26,7 +26,10 @@ LOCAL_SRC_FILES := \
+ 	miniopt.c
+ 
+ LOCAL_MODULE := dhdutil
+-LOCAL_CFLAGS := -DSDTEST -DTARGETENV_android -Dlinux -DLINUX -mabi=aapcs-linux
++LOCAL_CFLAGS := -DSDTEST -DTARGETENV_android -Dlinux -DLINUX
++ifeq ($(TARGET_ARCH),arm)
++LOCAL_CFLAGS += -mabi=aapcs-linux
++endif
+ LOCAL_C_INCLUDES +=$(LOCAL_PATH)/include
+ 
+ LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
+diff --git a/hardware/broadcom/wlan/bcmdhd/wpa_supplicant_8_lib/Android.mk b/hardware/broadcom/wlan/bcmdhd/wpa_supplicant_8_lib/Android.mk
+index af3adf9..146e04d 100644
+--- a/hardware/broadcom/wlan/bcmdhd/wpa_supplicant_8_lib/Android.mk
++++ b/hardware/broadcom/wlan/bcmdhd/wpa_supplicant_8_lib/Android.mk
+@@ -43,8 +43,10 @@ ifdef CONFIG_DRIVER_WEXT
+ WPA_SRC_FILE += driver_cmd_wext.c
+ endif
+ 
++ifeq ($(TARGET_ARCH),arm)
+ # To force sizeof(enum) = 4
+ L_CFLAGS += -mabi=aapcs-linux
++endif
+ 
+ ifdef CONFIG_ANDROID_LOG
+ L_CFLAGS += -DCONFIG_ANDROID_LOG
+-- 
+1.7.1
+diff --git a/hardware/broadcom/wlan/bcmdhd/bcmdhd_net_iface/Android.mk b/hardware/broadcom/wlan/bcmdhd/bcmdhd_net_iface/Android.mk
+index be22624..c5dc34d 100644
+--- a/hardware/broadcom/wlan/bcmdhd/bcmdhd_net_iface/Android.mk
++++ b/hardware/broadcom/wlan/bcmdhd/bcmdhd_net_iface/Android.mk
+@@ -24,7 +24,9 @@ LOCAL_PATH := $(call my-dir)
+ include $(CLEAR_VARS)
+ LOCAL_SRC_FILES := bcmdhd_net_iface.c
+ LOCAL_MODULE := libnetcmdiface
++ifeq ($(TARGET_ARCH),arm)
+ LOCAL_CFLAGS := -mabi=aapcs-linux
++endif
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_ALLOW_UNDEFINED_SYMBOLS := true
+ include $(BUILD_SHARED_LIBRARY)
+diff --git a/hardware/qcom/wlan/qcwcn/wpa_supplicant_8_lib/Android.mk b/hardware/qcom/wlan/qcwcn/wpa_supplicant_8_lib/Android.mk
+index 802454c..df715ae 100644
+--- a/hardware/qcom/wlan/qcwcn/wpa_supplicant_8_lib/Android.mk
++++ b/hardware/qcom/wlan/qcwcn/wpa_supplicant_8_lib/Android.mk
+@@ -39,8 +39,10 @@ WPA_SUPPL_DIR_INCLUDE += external/libnl-headers
+ WPA_SRC_FILE += driver_cmd_nl80211.c
+ endif
+ 
++ifeq ($(TARGET_ARCH),arm)
+ # To force sizeof(enum) = 4
+ L_CFLAGS += -mabi=aapcs-linux
++endif
+ 
+ ifdef CONFIG_ANDROID_LOG
+ L_CFLAGS += -DCONFIG_ANDROID_LOG

@@ -1,0 +1,7 @@
+/system	ext4	/dev/block/ndsystem
+/data	ext4	/dev/block/nddata
+/cache	ext4	/dev/block/ndcache
+/sdcard	vfat	/dev/block/mmcblk0p1 /dev/block/mmcblk0
+/misc	mtd	/dev/block/ndmisc
+/boot	mtd	/dev/block/ndboot
+/recovery	mtd	/dev/block/ndrecovery

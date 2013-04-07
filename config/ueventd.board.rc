@@ -1,0 +1,32 @@
+#for SGX
+/dev/pvrsrvkm             0666   system     system
+
+# JZ graphics
+/dev/x2d                  0666   root       graphics
+/dev/ipu0                 0666   root       graphics
+/dev/ipu1                 0666   root       graphics
+/dev/dmmu                 0666   root       graphics
+
+# JZ G-sensor
+/dev/g_sensor             0666   root       root
+/dev/orientation_sensor   0666   root       root
+
+#/dev/log/*                0662   root       log
+#/dev/log/events           0666   root       log
+
+#ingenic camea device 
+/dev/cim    0666    root    root
+
+# for ingenic vpu or tcsm
+/dev/tcsm		  0666    root    root
+/dev/jz-vpu		  0666    root    root
+
+#/dev/uinput               0660   system     bluetooth
+
+/dev/graphics/*           0666   root       graphics
+
+# for ingenic hdmi device
+/dev/hdmi                 0666   root      root
+
+
+

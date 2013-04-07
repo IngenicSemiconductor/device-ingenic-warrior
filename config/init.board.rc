@@ -1,0 +1,213 @@
+#import init.q8.usb.rc
+
+on init
+    write /dev/nand_char "CMD_INSTALL_PARTITION:ALL"
+    
+    #change the perms of ttyS of radio(rild)
+    chown radio radio  /dev/ttyUSB0
+    chmod 0666 /dev/ttyUSB0
+    chown radio radio  /dev/ttyUSB1
+    chmod 0666 /dev/ttyUSB1
+    chown radio radio  /dev/ttyUSB2
+    chmod 0666 /dev/ttyUSB2
+
+    # See storage config details at http://source.android.com/tech/storage/
+    mkdir /mnt/shell/emulated 0700 shell shell
+    mkdir /storage/emulated 0555 root root
+
+    export EXTERNAL_STORAGE /storage/emulated/legacy
+    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export EMULATED_STORAGE_TARGET /storage/emulated
+
+    # Support legacy paths
+    symlink /storage/emulated/legacy /sdcard
+    symlink /storage/emulated/legacy /mnt/sdcard
+    symlink /storage/emulated/legacy /storage/sdcard0
+    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+
+    mkdir /storage/sdcard1 0400 system system
+
+on fs
+    mount ext4 /dev/block/ndsystem /system
+    write /proc/exec /system/bin/sh:/system/etc/disk_preparing.sh
+    mount_all /fstab.warrior
+    setprop ro.crypto.fuse_sdcard true
+
+on post-fs
+    mkdir /data/vendor 0755 system system
+    mkdir /data/vendor/bin 0777 system system
+    mkdir /data/vendor/app 0755 system system   
+    mkdir /data/vendor/lib 0777 system system
+    #exec /system/bin/sh /system/etc/vendorprepare.sh
+    chown system system /data/vendor/bin/ABI_filter
+    chmod 755 /data/vendor/bin/ABI_fil
+
+    # enable battery driver
+    # write /proc/jz47xx_battery/enable 1
+    #exec /system/bin/readbattery
+    #exec /system/bin/readbattery update_curve
+
+on post-fs-data
+    #for pppoe
+    chmod 0777 /data/etc/ppp/pppoe.conf
+
+#change perms of dhcp and wifi socket
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    mkdir /data/misc/wifi/sockets 0777 wifi wifi
+    mkdir /data/system 1775 system system
+    mkdir /data/system/wpa_supplicant 1775 wifi wifi
+
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
+
+    # we will remap this as /mnt/sdcard with the sdcard fuse tool
+    mkdir /data/media 0775 media_rw media_rw
+    chown media_rw media_rw /data/media
+
+    # If there is no fs-post-data action in the init.<device>.rc file, you
+    # must uncomment this line, otherwise encrypted filesystems
+    # won't work.
+    # Set indication (checked by vold) that we have finished this action
+    setprop vold.post_fs_data_done 1
+
+on boot
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    chown system system /sys/class/backlight/pwm-backlight.0/brightness
+
+#Set StrictMode Quietly 
+    setprop persist.sys.strictmode.visual 0
+
+    setprop ro.build.withbluetooth 0
+    setprop ro.tether.denied true
+    setprop persist.sys.usb.config adb
+    
+#================= BCM
+#wpa_supplicant control socket for android wifi.c
+    setprop wifi.interface wlan0
+
+# enable Google-specific location features,
+# like NetworkLocationProvider and LocationCollector
+    setprop ro.com.google.locationfeatures 1
+
+# virtual sdcard daemon running as media_rw (1023)
+service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
+    class late_start
+
+# add dhcpcd and wpa_supplicant services for wlan
+# >>>>>NOTICE THE NAME<<<<<
+# add dhcpcd and wpa_supplicant services for wlan
+# service wpa_supplicant /system/bin/wpa_supplicant -Dwext -c/data/misc/wifi/wpa_supplicant.conf
+service wpa_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+   disabled
+   oneshot
+
+#================= BCM
+# add dhcpcd and wpa_supplicant services for wlan0
+service dhcpcd_wlan0 /system/bin/dhcpcd -ABKL
+    disabled
+    oneshot
+
+on property:init.svc.wpa_supplicant=stopped
+    stop dhcpcd
+
+service dhcpcd_eth0 /system/bin/dhcpcd -o domain_name_servers -ABKL
+    disabled
+    oneshot
+#add for 3G support
+
+service pppd_wcdma /system/bin/pppd call wcdmadialer
+    user root
+    group system radio
+    disabled
+    oneshot
+
+service pppd_evdo /system/bin/pppd call evdodialer
+    user root
+    group system radio
+    disabled
+    oneshot
+
+#pppoe
+service pppoe-start /system/bin/pppoe-start
+    disabled
+    oneshot
+
+service pppoe-setup /system/bin/pppoe-setup
+    disabled
+    oneshot
+    
+service pppoe-stop /system/bin/pppoe-stop
+    disabled
+    oneshot
+
+#wifi test
+service wifi_install /system/bin/wifi_install.sh
+    oneshot
+    disabled
+
+service wifi_send1 /system/bin/wifi_send1.sh
+    oneshot
+    disabled
+
+service wifi_send2 /system/bin/wifi_send2.sh
+    oneshot
+    disabled
+
+service wifi_carrier1 /system/bin/wifi_carrier1.sh
+    oneshot
+    disabled
+
+service wifi_carrier2 /system/bin/wifi_carrier2.sh
+    oneshot
+    disabled
+
+service wifi_receive1 /system/bin/wifi_receive1.sh
+    oneshot
+    disabled
+
+service wifi_receive2 /system/bin/wifi_receive2.sh
+    oneshot
+    disabled
+
+service wifi_end /system/bin/wifi_exit.sh
+    oneshot
+    disabled
+
+service pvrsrvctl /system/bin/pvrsrvctl --start
+    class core
+    user root
+    group root
+    oneshot
+
+#service dbus /system/bin/dbus-daemon --system --nofork
+#    class main
+#    socket dbus stream 660 bluetooth bluetooth
+#    user bluetooth
+#    group bluetooth net_bt_admin
+
+#service bluetoothd /system/bin/bluetoothd -n
+#    class main
+#    socket bluetooth stream 660 bluetooth bluetooth
+#    socket dbus_bluetooth stream 660 bluetooth bluetooth
+#    # init.rc does not yet support applying capabilities, so run as root and
+#    # let bluetoothd drop uid to bluetooth with the right linux capabilities
+#    group bluetooth net_bt_admin misc
+#    disabled
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<devices>
+	<device name="g_sensor" />
+	<device name="magnetic_sensor" />
+	<device name="orientation_sensor" />
+	<device name="gyroscope_sensor" />
+	<device name="light_sensor" />
+	<device name="pressure_sensor" />
+	<device name="temperature_sensor" />
+	<device name="proximity_sensor" />
+	<device name="touchscreen" />
+</devices>
+
+
