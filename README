@@ -1,100 +1,43 @@
+Put all files under me to $ANDROID_ROOT/device/ingenic/warrior/
+
 ****PART ONE: Building the System****
 1. Initialize the environment with the envsetup.sh script.
     $ source build/envsetup.sh
 or
     $ . build/envsetup.sh
 
-2. There are some ARM only C-flags under hardware/ must be modified. Find them and modify them like this:
-   ifeq ($(TARGET_ARCH),arm)
-   LOCAL_CFLAGS := -mabi=aapcs-linux
-   endif
-
-3. Choose target.
+2. Choose target.
     $ lunch full_warrior-userdebug
 
-4. Build everything.
+3. Build everything.
     $ make -j24
 
-5. Generate system.img.bin which is needed by FASTBOOT after the successful build.
-    $ croot
-    $ cd device/ingenic/warrior
-    $ ./img2nand.sh
-NOTICE: This script depend on $ANDROID_PRODUCT_OUT and $ANDROID_BUILD_TOP.
-
 ****PART TWO: Flashing the device****
-There are 2 ways to flash the device:
-Method A: Flashing with TF card;
-Method B: Flashing with FASTBOOT.
-NOTICE: To method A, we ONLY support TF card of 2G and 8G.
+Because fastboot is related to bootloader, so x-boot-nand.bin must be updated first.
+NOTICE: For updating x-boot-nand.bin by TF card, we ONLY support TF card of 2G and 8G.
 
-----Method A: Flashing with TF card----
-1. Flash the TF card(Only need doing this once):
-    a. Plug the TF card into PC and find the device node of the TF card(For example, /dev/sdb):
-    b. Flash the firmware into TF card:
-        $ croot
-        $ cd device/ingenic/warrior/burner
-        $ sudo dd if=2G-warrior-unmd5-burner.fw of=/dev/sdb bs=512 && sync
-        for 2G or
-        $ sudo dd if=8G-warrior-unmd5-burner.fw of=/dev/sdb bs=512 && sync
-	for 8G
-    c. Eject the TF card and replug it into PC.
-    d. Format the TF card by vfat:
-        $ sudo mkfs.vfat /dev/sdb1
-
-2. Copy necssary files to TF card:
-       $ croot
-       $ cp device/ingenic/warrior/burner/config.txt /media/xxxxxxx(your tf vollabel)
-       $ cp device/ingenic/warrior/burner/burning_list_forall.txt /media/xxxxxxx/burning_list.txt
-       $ cp device/ingenic/warrior/burner/x-boot-nand.bin /media/xxxxxxx
-       $ cp out/target/product/warrior/boot.img /media/xxxxxxxx
-       $ cp out/target/product/warrior/system.img /media/xxxxxxxx
-       $ umount /media/xxxxxxxx
-
-3. Reflash the device:
-    a. Insert the TF card into device;
-    b. Press vol– and do a reset.
+----updating x-boot----
+Flash the TF card(Only need doing this once):
+   a. Insert a 2G or 8G TF card into PC;
+   b. $ cd device/ingenic/warrior/burner;
+   c. Run burn.sh followed the path of your TF card as argument. For example: sudo ./burn.sh /dev/sdc. Be careful of the device node, this step will format the TF card !!!
+   d. Eject the TF card and reinsert into PC;
+   e. cp config.txt /media/XXX/;
+   f. cp burning_list_forxboot.txt /media/XXX/burning_list.txt;
+   g. cp x-boot-nand.bin /media/XXX;
+   h. Unmount it;
+   i. Insert the TF card into device;
+   j. Press vol- and do a reset.
 NOTICE: Keeping vol- pressed until seeing the boot logo(A green Android robot).
 
-----Method B: Flashing with FASTBOOT----
-1. Press 'esc' and do a reset;
+----Flashing with FASTBOOT----
+1. Run:
+   $ cd 'Android-root'
+   $ sudo -s
+   # . build/envsetup.sh
+   # lunch full_warrior-userdebug
+   # ./fastboot flashall
+NOTE: Because of the system is resized to 640MB, flashall will take about 10 Minutes.
+
+2. Press 'esc' and do a reset;
 NOTICE: Keeping 'esc' pressed until seeing the fastboot logo(A green Android robot and a few words).
-
-2. Once the device is in fastboot mode, run
-       $ croot
-       $ cp out/host/linux-x86/bin/fastboot out/target/product/warrior/
-       $ cd out/target/product/warrior/
-       $ ./fastboot erase userdata
-       $ ./fastboot erase cache
-       $ ./fastboot erase boot
-       $ ./fastboot erase system
-       $ ./fastboot flash boot boot.img
-       $ ./fastboot flash:raw system system.img.bin
-       $ ./fastboot reboot
-
-3. If you met some problem with fastboot, you can try updating x-boot:
-   3.1 Flash the TF card(Only need doing this once):
-       a. Plug the TF card into PC and find the device node of the TF card(For example, /dev/sdb):
-       b. Flash the firmware into TF card:
-           $ croot
-           $ cd device/ingenic/warrior/burner
-	   For 2G TF card:
-           $ sudo dd if=2G-warrior-unmd5-burner.fw of=/dev/sdb bs=512 && sync
-	   For 8G TF card:
-           $ sudo dd if=8G-warrior-unmd5-burner.fw of=/dev/sdb bs=512 && sync
-       c. Eject the TF card from replug it into PC.
-       d. Format the TF card by vfat:
-           $ sudo mkfs.vfat /dev/sdb1
-
-   3.2 Copy necssary files to TF card:
-       $ croot
-       $ cp device/ingenic/warrior/burner/config.txt /media/xxxxxxx(your tf vollabel)
-       $ cp device/ingenic/warrior/burner/burning_list_forxboot.txt /media/xxxxxxx/burning_list.txt
-       $ cp device/ingenic/warrior/burner/x-boot-nand.bin /media/xxxxxxx
-       $ umount /media/xxxxxxxx
-
-   3.3 Reflash the device:
-       a. Insert the TF card into device;
-       b. Press vol– and do a reset.
-   NOTICE: Keeping vol- pressed until seeing the boot logo(A green Android robot).
-
-   3.4 Go to 1, retry fastboot

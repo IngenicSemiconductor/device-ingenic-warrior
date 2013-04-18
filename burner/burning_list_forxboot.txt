@@ -13,7 +13,7 @@
 #	boot.img>6144
 #	system.img>131072
 
-erase:ndxboot
+erase:all
 
 option:no_check
 

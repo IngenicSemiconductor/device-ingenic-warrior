@@ -112,7 +112,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_AAPT_CONFIG := normal ldpi mdpi
 PRODUCT_AAPT_PREF_CONFIG := ldpi
-PRODUCT_LOCALES := zh_CN zh_TW en_US en_GB fr_FR it_IT de_DE es_ES cs_CZ ru_RU ko_KR ar_EG ja_JP
+PRODUCT_LOCALES := en_US zh_CN zh_TW en_GB fr_FR it_IT de_DE es_ES cs_CZ ru_RU ko_KR ar_EG ja_JP
 
 PRODUCT_PROPERTY_OVERRIDES +=    \
     ro.sf.lcd_density=160                           \

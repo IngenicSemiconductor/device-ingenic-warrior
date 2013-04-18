@@ -77,7 +77,7 @@ if [ $# -eq 1 ]; then
 				if [ -z ${burnfw} ]; then
 					dev_size=4G
 					burnfw=`sed -n /^4G/p fw.tmp`
-				else
+				elif [ -z ${burnfw} ]; then
 					dev_size=2G
 					burnfw=`sed -n /^2G/p fw.tmp`
 					if [ -z ${burnfw} ]; then
@@ -97,7 +97,7 @@ if [ $# -eq 1 ]; then
 			if [ -z ${burnfw} ]; then
 				dev_size=4G
 				burnfw=`sed -n /^4G/p fw.tmp`
-			else
+			elif [ -z ${burnfw} ]; then
 				dev_size=2G
 				burnfw=`sed -n /^2G/p fw.tmp`
 				if [ -z ${burnfw} ]; then
@@ -113,7 +113,7 @@ if [ $# -eq 1 ]; then
 		if [ -z ${burnfw} ]; then
 			dev_size=4G
 			burnfw=`sed -n /^4G/p fw.tmp`
-		else
+		elif [ -z ${burnfw} ]; then
 			dev_size=2G
 			burnfw=`sed -n /^2G/p fw.tmp`
 			if [ -z ${burnfw} ]; then
