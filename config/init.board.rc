@@ -29,7 +29,11 @@ on init
 
 on fs
     mount ext4 /dev/block/ndsystem /system
-    write /proc/exec /system/bin/sh:/system/etc/disk_preparing.sh
+    #write /proc/exec /system/bin/sh:/system/etc/disk_preparing.sh
+    # create /data and /cache filesystem if necessary
+    chmod 0755 /system/etc/disk_preparing.sh
+    class_start ingenic
+    wait /dev/disk_preparing_done 100
     mount_all /fstab.warrior
     setprop ro.crypto.fuse_sdcard true
 
@@ -105,6 +109,11 @@ on boot
 # enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector
     setprop ro.com.google.locationfeatures 1
+
+# create /data and /cache filesystems if necessary
+service disk_preparing /system/etc/disk_preparing.sh
+    class ingenic
+    oneshot
 
 # virtual sdcard daemon running as media_rw (1023)
 service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023

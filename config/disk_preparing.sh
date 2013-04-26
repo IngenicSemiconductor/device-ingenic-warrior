@@ -24,3 +24,4 @@ else
 	/system/bin/umount /data
 fi
 
+echo "Finished disk_preparing.sh" > /dev/disk_preparing_done
