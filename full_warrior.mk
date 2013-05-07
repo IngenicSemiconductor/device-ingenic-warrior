@@ -30,9 +30,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 # Discard inherited values and use our own instead.
 PRODUCT_NAME := full_warrior
 PRODUCT_DEVICE := warrior
-PRODUCT_BRAND := Ainol
-PRODUCT_MODEL := Novo7Basic
-PRODUCT_MANUFACTURER := ainol
+PRODUCT_BRAND := Ingenic
+PRODUCT_MODEL := AOSP
+PRODUCT_MANUFACTURER := Ingenic
 #PRODUCT_OTA_PUBLIC_KEYS := warrior
 PRODUCT_CHARACTERISTICS := tablet
 #PRODUCT_DEFAULT_DEV_CERTIFICATE := warrior

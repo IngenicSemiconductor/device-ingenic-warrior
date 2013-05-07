@@ -53,8 +53,10 @@ $(call inherit-product, hardware/ingenic/xb4780/libGPU/gpu.mk)
 #$(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4330/device-bcm.mk)
 
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/config/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
     $(LOCAL_PATH)/config/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf              \
     $(LOCAL_PATH)/config/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf                            \
+    $(LOCAL_PATH)/config/init.rc:root/init.rc                                                 \
     $(LOCAL_PATH)/config/init.board.rc:root/init.$(TARGET_BOARD_NAME).rc                      \
     $(LOCAL_PATH)/config/init.board.usb.rc:root/init.$(TARGET_BOARD_NAME).usb.rc              \
     $(LOCAL_PATH)/config/fstab.board:root/fstab.$(TARGET_BOARD_NAME)                          \
@@ -78,21 +80,12 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/config/excluded-input-devices.xml:system/etc/excluded-input-devices.xml
 
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
-    frameworks/native/data/etc/android.hardware.faketouch.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.faketouch.multitouch.jazzhand.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
-    frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-    frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml
+    frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml
 
-#PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml
-
-#PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml
-
-#PRODUCT_COPY_FILES += \
+PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml
 
 PRODUCT_COPY_FILES += \
@@ -133,15 +126,15 @@ PRODUCT_PROPERTY_OVERRIDES +=    \
     rild.libargs=-d /dev/ttyUSB2                    \
     mobiled.libpath=/system/lib/libmobiled.so
 
-PRODUCT_PROPERTY_OVERRIDES +=    \
-    ro.board.hdmi.support=true                      \
-    ro.board.hdmi.device=HDMI,LCD,SYNC              \
-    ro.board.hdmi.hotplug.support=true              \
+# PRODUCT_PROPERTY_OVERRIDES +=    \
+#     ro.board.hdmi.support=true                      \
+#     ro.board.hdmi.device=HDMI,LCD,SYNC              \
+#     ro.board.hdmi.hotplug.support=true              \
 
-PRODUCT_PROPERTY_OVERRIDES +=    \
-    ro.board.tvout.support=false                    \
-    ro.board.hasethernet=ethernet                   \
-    ro.board.haspppoe=pppoe
+# PRODUCT_PROPERTY_OVERRIDES +=    \
+#     ro.board.tvout.support=false                    \
+#     ro.board.hasethernet=ethernet                   \
+#     ro.board.haspppoe=pppoe
 
 # H/W composition disabled
 #PRODUCT_PROPERTY_OVERRIDES +=    \
@@ -153,8 +146,9 @@ PRODUCT_PROPERTY_OVERRIDES +=    \
 #PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp
 
-#PRODUCT_PROPERTY_OVERRIDES := \
+#PRODUCT_PROPERTY_OVERRIDES += \
         net.dns1=8.8.8.8 \
         net.dns2=8.8.4.4
 
-
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.carrier=wifi-only

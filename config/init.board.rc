@@ -96,10 +96,10 @@ on boot
     chown system system /sys/class/backlight/pwm-backlight.0/brightness
 
 #Set StrictMode Quietly 
-    setprop persist.sys.strictmode.visual 0
+#    setprop persist.sys.strictmode.visual 0
 
-    setprop ro.build.withbluetooth 0
-    setprop ro.tether.denied true
+#    setprop ro.build.withbluetooth 0
+#    setprop ro.tether.denied true
     setprop persist.sys.usb.config adb
     
 #================= BCM
@@ -108,7 +108,7 @@ on boot
 
 # enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector
-    setprop ro.com.google.locationfeatures 1
+#    setprop ro.com.google.locationfeatures 1
 
 # create /data and /cache filesystems if necessary
 service disk_preparing /system/etc/disk_preparing.sh
