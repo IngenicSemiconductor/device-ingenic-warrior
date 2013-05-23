@@ -14,30 +14,21 @@ or
 
 ****PART TWO: Flashing the device****
 Because fastboot is related to bootloader, so x-boot-nand.bin must be updated first.
-NOTICE: For updating x-boot-nand.bin by TF card, we ONLY support TF card of 2G and 8G.
 
 ----updating x-boot----
-Flash the TF card(Only need doing this once):
-   a. Insert a 2G or 8G TF card into PC;
-   b. $ cd device/ingenic/warrior/burner;
-   c. Run burn.sh followed the path of your TF card as argument. For example: sudo ./burn.sh /dev/sdc. Be careful of the device node, this step will format the TF card !!!
-   d. Eject the TF card and reinsert into PC;
-   e. cp config.txt /media/XXX/;
-   f. cp burning_list_forxboot.txt /media/XXX/burning_list.txt;
-   g. cp x-boot-nand.bin /media/XXX;
-   h. Unmount it;
-   i. Insert the TF card into device;
-   j. Press vol- and do a reset.
-NOTICE: Keeping vol- pressed until seeing the boot logo(A green Android robot).
+1. Connect the device to PC by USB cable and plug charger into the device;
+2. Put device into USB-BOOT mode by pressing Vol+ and do a reset;
+3. Check if the device enters USB boot mode by 'lsusb', 'xxxx:4780' is the target;
+4. $ cd ingenic-xboot-updater
+5. $ sudo ./ingenic-xboot-updater --boot=x-boot-nand.bin;
 
 ----Flashing with FASTBOOT----
 1. Run:
-   $ cd 'Android-root'
-   $ sudo -s
+   # cd 'Android-root'
    # . build/envsetup.sh
    # lunch full_warrior-userdebug
-   # ./fastboot flashall
+   # fastboot flashall
 NOTE: Because of the system is resized to 640MB, flashall will take about 10 Minutes.
 
 2. Press 'esc' and do a reset;
-NOTICE: Keeping 'esc' pressed until seeing the fastboot logo(A green Android robot and a few words).
+NOTICE: Keeping 'esc' pressed until seeing the white USB logo.
