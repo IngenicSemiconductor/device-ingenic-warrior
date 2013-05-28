@@ -88,4 +88,3 @@ TARGET_RECOVERY_UI_LIB := librecovery_ui_warrior
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 
 WITH_JIT := true
-WITH_DEXPREOPT := true
