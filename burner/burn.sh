@@ -158,7 +158,7 @@ if [ $# -eq 1 ]; then
 	fi
 	sed -rn "/[0-9]+/s/${dev_path}//p" format_tmp1.txt > format_tmp.txt
 	format_tmp_size=`du -b format_tmp.txt | awk '{print $1}'`
-	if [ format_tmp_size -eq 0 ]; then
+	if [ ${format_tmp_size} -eq 0 ]; then
 		echo "error: no format partition, you should check your fw is right or not"
 		rm format_tmp.txt
 		exit 1

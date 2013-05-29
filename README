@@ -1,6 +1,6 @@
-Put all files under me to $ANDROID_ROOT/device/ingenic/warrior/
+Put all files here into $ANDROID_ROOT/device/ingenic/warrior/
 
-****PART ONE: Building the System****
+**** PART ONE: Building the System ****
 1. Initialize the environment with the envsetup.sh script.
     $ source build/envsetup.sh
 or
@@ -12,32 +12,39 @@ or
 3. Build everything.
     $ make -j24
 
-****PART TWO: Flashing the device****
-Because fastboot is related to bootloader, so x-boot-nand.bin must be updated first.
-NOTICE: For updating x-boot-nand.bin by TF card, we ONLY support TF card of 2G and 8G.
+**** PART TWO: Flashing the device ****
+Because fastboot is related to bootloader, the x-boot-nand.bin must be updated.
+This only needs to be done once per tablet.
+---- updating x-boot ----
+1. Connect the device to PC by USB cable and plug charger into the device.
 
-----updating x-boot----
-Flash the TF card(Only need doing this once):
-   a. Insert a 2G or 8G TF card into PC;
-   b. $ cd device/ingenic/warrior/burner;
-   c. Run burn.sh followed the path of your TF card as argument. For example: sudo ./burn.sh /dev/sdc. Be careful of the device node, this step will format the TF card !!!
-   d. Eject the TF card and reinsert into PC;
-   e. cp config.txt /media/XXX/;
-   f. cp burning_list_forxboot.txt /media/XXX/burning_list.txt;
-   g. cp x-boot-nand.bin /media/XXX;
-   h. Unmount it;
-   i. Insert the TF card into device;
-   j. Press vol- and do a reset.
-NOTICE: Keeping vol- pressed until seeing the boot logo(A green Android robot).
+2. Put device into USB-BOOT mode by pressing both Vol+ and reset at the same time
+   and keeping Vol+ pressed for at least 2 seconds after reset is released.
 
-----Flashing with FASTBOOT----
-1. Run:
-   $ cd 'Android-root'
+3. Note that the screen is blank in this mode.
+
+4. Check if the device entered USB boot mode correctly using 'lsusb'.
+   'xxxx:4780' is the target.
+
+5. $ cd ingenic-xboot-updater
+
+6. $ sudo ./ingenic-xboot-updater --boot=x-boot-nand.bin
+
+
+---- Flashing with FASTBOOT ----
+1. Press 'esc' and do a reset, keep 'esc' key pressed until fastboot screen appears.
+
+2. The USB icon in the center of screen will show if you have a proper USB connection.
+
+3. Run fastboot on host. You can run fastboot as a normal user if your udev rules
+   include the tablet device ID. Otherwise, you need to run fastboot as root::
    $ sudo -s
+   # cd 'Android-root'
    # . build/envsetup.sh
    # lunch full_warrior-userdebug
-   # ./fastboot flashall
-NOTE: Because of the system is resized to 640MB, flashall will take about 10 Minutes.
+   # fastboot flashall
 
-2. Press 'esc' and do a reset;
-NOTICE: Keeping 'esc' pressed until seeing the fastboot logo(A green Android robot and a few words).
+NOTE: Because the system is resized to 640MB, flashall will take about 10 Minutes.
+      There is a progress indicator onscreen.
+      'fastboot -w flashall' for flashing with wiping /data and /cache.
+

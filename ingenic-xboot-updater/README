@@ -1,0 +1,14 @@
+This tool can help you update boot loader on NPM801 and Warrior by USB cable.
+1. Connect the device to PC by USB cable and plug charger into the device.
+
+2. Put device into USB-BOOT mode by pressing both Vol+ and reset at the same time
+   and keeping Vol+ pressed for at least 2 seconds after reset is released.
+
+3. Note that the screen is blank in this mode.
+
+4. Check if the device entered USB boot mode correctly using 'lsusb'.
+   'xxxx:4780' is the target.
+
+5. $ cd ingenic-xboot-updater
+
+6. $ sudo ./ingenic-xboot-updater --boot=x-boot-nand.bin
