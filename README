@@ -1,6 +1,6 @@
-Put all files under me to $ANDROID_ROOT/device/ingenic/warrior/
+Put all files here into $ANDROID_ROOT/device/ingenic/warrior/
 
-****PART ONE: Building the System****
+**** PART ONE: Building the System ****
 1. Initialize the environment with the envsetup.sh script.
     $ source build/envsetup.sh
 or
@@ -12,23 +12,39 @@ or
 3. Build everything.
     $ make -j24
 
-****PART TWO: Flashing the device****
-Because fastboot is related to bootloader, so x-boot-nand.bin must be updated first.
+**** PART TWO: Flashing the device ****
+Because fastboot is related to bootloader, the x-boot-nand.bin must be updated.
+This only needs to be done once per tablet.
+---- updating x-boot ----
+1. Connect the device to PC by USB cable and plug charger into the device.
 
-----updating x-boot----
-1. Connect the device to PC by USB cable and plug charger into the device;
-2. Put device into USB-BOOT mode by pressing both Vol+ and reset at the same time and keeping Vol+ pressed for unless 2 seconds after reset is triggered;
-3. Check if the device enters USB boot mode by 'lsusb', 'xxxx:4780' is the target;
-4. $ cd ingenic-xboot-updater
-5. $ sudo ./ingenic-xboot-updater --boot=x-boot-nand.bin;
+2. Put device into USB-BOOT mode by pressing both Vol+ and reset at the same time
+   and keeping Vol+ pressed for at least 2 seconds after reset is released.
 
-----Flashing with FASTBOOT----
-1. Run:
+3. Note that the screen is blank in this mode.
+
+4. Check if the device entered USB boot mode correctly using 'lsusb'.
+   'xxxx:4780' is the target.
+
+5. $ cd ingenic-xboot-updater
+
+6. $ sudo ./ingenic-xboot-updater --boot=x-boot-nand.bin
+
+
+---- Flashing with FASTBOOT ----
+1. Press 'esc' and do a reset, keep 'esc' key pressed until fastboot screen appears.
+
+2. The USB icon in the center of screen will show if you have a proper USB connection.
+
+3. Run fastboot on host. You can run fastboot as a normal user if your udev rules
+   include the tablet device ID. Otherwise, you need to run fastboot as root::
+   $ sudo -s
    # cd 'Android-root'
    # . build/envsetup.sh
    # lunch full_warrior-userdebug
    # fastboot flashall
-NOTE: Because of the system is resized to 640MB, flashall will take about 10 Minutes.
 
-2. Press 'esc' and do a reset;
-NOTICE: Keeping 'esc' pressed until seeing the white USB logo.
+NOTE: Because the system is resized to 640MB, flashall will take about 10 Minutes.
+      There is a progress indicator onscreen.
+      'fastboot -w flashall' for flashing with wiping /data and /cache.
+
