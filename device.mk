@@ -47,6 +47,8 @@ $(call inherit-product, hardware/ingenic/xb4780/libGPU/gpu.mk)
 # inherit from the non-open-source side, if present
 $(call inherit-product-if-exists, vendor/ingenic/$(TARGET_BOARD_NAME)/$(TARGET_BOARD_NAME)-vendor.mk)
 $(call inherit-product-if-exists, vendor/google/products/gms.mk)
+$(call inherit-product, hardware/ingenic/xb4780/libcamera2/binary/camera.mk)
+$(call inherit-product, hardware/ingenic/xb4780/libxbomx/xbomx.mk)
 
 # Wifi
 #BOARD_WLAN_DEVICE_REV := 

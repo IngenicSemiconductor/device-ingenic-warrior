@@ -65,7 +65,7 @@ BOARD_KERNEL_CMDLINE := mem=256M@0x0 mem=752M@0x30000000 console=ttyS3,57600n8 i
 #camera configure
 BOARD_HAS_CAMERA := true
 CAMERA_SUPPORT_VIDEOSNAPSHORT := false
-COVERT_WITH_SOFT := true
+COVERT_WITH_SOFT := false
 CAMERA_VERSION := 1
 
 # Wi-Fi hardware selection
