@@ -59,7 +59,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/config/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
     $(LOCAL_PATH)/config/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf              \
     $(LOCAL_PATH)/config/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf                            \
-    $(LOCAL_PATH)/config/init.rc:root/init.rc                                                 \
     $(LOCAL_PATH)/config/init.board.rc:root/init.$(TARGET_BOARD_NAME).rc                      \
     $(LOCAL_PATH)/config/init.board.usb.rc:root/init.$(TARGET_BOARD_NAME).usb.rc              \
     $(LOCAL_PATH)/config/fstab.board:root/fstab.$(TARGET_BOARD_NAME)                          \
